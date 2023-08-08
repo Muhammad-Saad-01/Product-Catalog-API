@@ -1,0 +1,32 @@
+server:
+  error:
+    include-message: always
+    include-binding-errors: always
+
+  port: 9005
+
+
+spring:
+  application:
+    name: product-catalog-api
+  devtools:
+    livereload:
+      enabled: true
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/product-catalog-api
+    username: postgres
+    password: admin
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: true
+
+#logging:
+#  pattern:
+#    console: "%d{dd-MM-yyyy HH:mm:ss} %magenta([%thread]) %highlight(%-5level) %logger.%M - %msg%n"
