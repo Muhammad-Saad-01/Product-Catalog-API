@@ -18,5 +18,4 @@ public interface CategoryService {
     void activateCategory(long categoryId);
 
     List<CategoryModel> getCategoriesByFilter(Predicate predicate);
-
 }

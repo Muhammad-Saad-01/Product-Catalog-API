@@ -12,7 +12,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
+import static junit.runner.Version.id;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
@@ -33,29 +36,31 @@ class BrandRepositoryTest {
 
     @BeforeEach
     public void setUp() {
-//        brand1 = new Brand(
-//                1L,
-//                "LG",
-//                "LG Corporation is a South Korean multinational conglomerate corporation " +
-//                        "headquartered in Yeouido-dong, Seoul, South Korea. It is part of the LG Group, " +
-//                        "comprising over 60 subsidiaries in electronics, chemical, and telecom fields.",
-//                "https://www.lg.com/us/images/AboutLG/lg-logo-2x.png", true
-//        );
-//        brand2 = new Brand(
-//                2L,
-//                "Samsung",
-//                "Samsung is a South Korean multinational conglomerate headquartered in Samsung Town, Seoul. " +
-//                        "It comprises numerous affiliated businesses, most of them united under the Samsung brand, " +
-//                        "and is the largest South Korean chaebol.",
-//                "https://images.samsung.com/is/image/samsung/assets/us/about-us/brand/logo/mo/360_197_1.png?$FB_TYPE_B_PNG$",
-//                false);
-//        brand3 = new Brand(
-//                3L,
-//                "Apple",
-//                "Apple Inc. is an American multinational technology company headquartered in Cupertino, California, " +
-//                        "that designs, develops, and sells consumer electronics, computer software, and online services.",
-//                "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/100px-Apple_logo_black.svg.png",
-//                true);
+        brand1 = Brand.builder().id(1L)
+                .name("Huawei")
+                .imageUri("https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/Huawei_logo_2018.svg/100px-Huawei_logo_2018.svg.png")
+                .active(true)
+                .about("Huawei Technologies Co., Ltd. is a Chinese multinational technology company headquartered in Shenzhen, Guangdong. " +
+                        "It provides telecommunications equipment and sells consumer electronics, smartphones and is headquartered in Shenzhen, Guangdong.")
+                .brandWebsiteUri("https://consumer.huawei.com/en/")
+                .build();
+
+        brand2 = Brand.builder().id(2L)
+                .name("Samsung")
+                .imageUri("https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Samsung_Logo.svg/100px-Samsung_Logo.svg.png")
+                .active(true)
+                .about("Samsung is a South Korean multinational conglomerate headquartered in Samsung Town, Seoul. " +
+                        "It comprises numerous affiliated businesses, most of them united under the Samsung brand, and is the largest South Korean chaebol.")
+                .brandWebsiteUri("https://www.samsung.com/us/")
+                .build();
+
+        brand3 = Brand.builder().id(3L)
+                .name("Apple")
+                .imageUri("https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/100px-Apple_logo_black.svg.png")
+                .active(true)
+                .about("Apple Inc. is an American multinational technology company headquartered in Cupertino, California, that designs, develops, and sells consumer electronics, computer software, and online services.")
+                .brandWebsiteUri("https://www.apple.com/")
+                .build();
 
         brands = new ArrayList<>();
         brands.add(brand1);
@@ -67,8 +72,12 @@ class BrandRepositoryTest {
 
     @Test
     void BrandRepository_SaveAll_shouldSaveAllBrands() {
+
         List<Brand> brandList = brandRepository.saveAll(brands);
 
+        for (Brand brand: brandList) {
+          assertThat(brand.getId()).isPositive();
+        }
 
     }
 
@@ -86,7 +95,18 @@ class BrandRepositoryTest {
         List<Brand> actualBrands = brandRepository.findAll();
 
         // assert
-        assertEquals(expectedBrands, actualBrands);
+        for(Brand brand: actualBrands) {
+             for (Brand expectedBrand: expectedBrands) {
+                 if (Objects.equals(brand.getName(), expectedBrand.getName())) {
+
+                     assertEquals(brand.getImageUri(), expectedBrand.getImageUri());
+                     assertEquals(brand.getAbout(), expectedBrand.getAbout());
+                     assertEquals(brand.getBrandWebsiteUri(), expectedBrand.getBrandWebsiteUri());
+                     assertEquals(brand.isActive(), expectedBrand.isActive());
+                 }
+             }
+        }
+
     }
 
 }

@@ -13,6 +13,8 @@ import java.util.List;
 public interface ProductMapper {
     @Mapping(target = "categoryName", source = "category.name")
     @Mapping(target = "brandName", source = "brand.name")
+    @Mapping(target = "inventoryStatus", source = "inventoryStatus")
+
     ProductModel toModel(Product product);
 
     @InheritInverseConfiguration
@@ -20,6 +22,5 @@ public interface ProductMapper {
 
     List<ProductModel> toModels(Iterable<Product> products);
 
-    void updateProductFromModel(ProductModel productModel, @MappingTarget Product product);
     Product updateProduct(ProductModel productModel, @MappingTarget Product product);
 }

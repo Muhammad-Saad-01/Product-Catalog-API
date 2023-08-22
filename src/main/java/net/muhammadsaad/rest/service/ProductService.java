@@ -1,19 +1,21 @@
 package net.muhammadsaad.rest.service;
 
 import com.querydsl.core.types.Predicate;
-import net.muhammadsaad.rest.entity.Product;
 import net.muhammadsaad.rest.model.ProductModel;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 public interface ProductService {
-    long addProduct(ProductModel productModel);
+    long createProduct(ProductModel productModel);
 
     ProductModel getProductById(Long productId);
 
-    List<ProductModel> getProductsByFilter(Predicate predicate);
+    ProductModel getProductByProductCode(String productCode);
 
+    List<ProductModel> getProductsByFilter(Predicate predicate);
+    List<ProductModel> getProductsByFilter(Map<String, Object> filteringOptions);
 
     void updateProduct(Long productId, ProductModel productModel);
 

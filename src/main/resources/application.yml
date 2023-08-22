@@ -2,8 +2,12 @@ server:
   error:
     include-message: always
     include-binding-errors: always
+  tomcat:
+    accesslog:
+      enabled: true
 
-  port: 9005
+
+  port: 8080
 
 
 spring:
@@ -11,12 +15,15 @@ spring:
     name: product-catalog-api
   devtools:
     livereload:
-      enabled: true
+      enabled: false
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/product-catalog-api
-    username: postgres
-    password: admin
+#    url: jdbc:postgresql://localhost:5432/product-catalog-api
+#    username: postgres
+#    password: admin
+    url: jdbc:postgresql://dpg-cjhu17lmrchc73a44geg-a.oregon-postgres.render.com:5432/product_catalog_api
+    username: admin
+    password: ZpvLxLWEK4jvZYJVXPDneWyTHyilqW0Q
   jpa:
     generate-ddl: true
     hibernate:

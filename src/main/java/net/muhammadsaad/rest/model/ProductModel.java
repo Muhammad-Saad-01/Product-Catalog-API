@@ -66,4 +66,11 @@ public class ProductModel {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
+
+    private String inventoryStatus;
+
+
+
 }
+

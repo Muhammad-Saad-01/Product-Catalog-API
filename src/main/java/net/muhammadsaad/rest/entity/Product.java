@@ -2,10 +2,8 @@ package net.muhammadsaad.rest.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.PositiveOrZero;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -54,7 +52,11 @@ public class Product {
 
     private boolean active = true;
 
-    private LocalDateTime createdAt ;
+    private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
+    @Enumerated(EnumType.STRING)
+    private  InventoryStatus inventoryStatus;
+
 }

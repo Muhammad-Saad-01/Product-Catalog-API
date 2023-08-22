@@ -67,7 +67,7 @@ class ProductServiceImplTest {
         when(productMapper.toEntity(productModel)).thenReturn(Product.builder().name("Product 1").build());
         when(productRepository.save(any())).thenReturn(Product.builder().id(1L).build());
 
-        long id = productService.addProduct(productModel);
+        long id = productService.createProduct(productModel);
 
         assertThat(id).isEqualTo(1L);
     }
@@ -78,7 +78,7 @@ class ProductServiceImplTest {
 
         when(productRepository.findProductByNameEquals(productModel.getName())).thenReturn(Optional.of(Product.builder().name("Product 1").build()));
 
-        assertThrows(ProductAlreadyExistException.class, () -> productService.addProduct(productModel));
+        assertThrows(ProductAlreadyExistException.class, () -> productService.createProduct(productModel));
     }
     @Test
     void addProduct_throwsCategoryNotFoundException_whenCategoryNotExists() throws ProductAlreadyExistException {
@@ -87,7 +87,7 @@ class ProductServiceImplTest {
         when(productRepository.findProductByNameEquals(any())).thenReturn(Optional.empty());
         when(categoryRepository.findCategoryByNameEquals(any())).thenReturn(Optional.empty());
 
-        assertThrows(CategoryNotFoundException.class, () -> productService.addProduct(productModel));
+        assertThrows(CategoryNotFoundException.class, () -> productService.createProduct(productModel));
     }
 
     @Test
@@ -99,7 +99,7 @@ class ProductServiceImplTest {
         when(categoryRepository.findCategoryByNameEquals(any())).thenReturn(Optional.of(category));
         when(brandRepository.findBrandByNameEquals(any())).thenReturn(Optional.empty());
 
-        assertThrows(BrandNotFoundException.class, () -> productService.addProduct(productModel));
+        assertThrows(BrandNotFoundException.class, () -> productService.createProduct(productModel));
     }
 
     @Test
@@ -129,7 +129,7 @@ class ProductServiceImplTest {
 
     @Test
     void updateProduct_throwsProductNotFoundException_whenProductDoesNotExist() {
-        Long productId = 1L;
+        long productId = 1L;
         ProductModel productModel = ProductModel.builder().name("Product 1").build();
 
         when(productRepository.findById(productId)).thenReturn(Optional.empty());
@@ -139,7 +139,7 @@ class ProductServiceImplTest {
 
     @Test
     void getProductById_shouldReturnProduct_whenProductExists() throws ProductNotFoundException {
-        Long productId = 1L;
+        long productId = 1L;
         Product product = Product.builder().name("Product 1").id(productId).build();
         when(productRepository.findById(productId)).thenReturn(Optional.of(product));
         when(productMapper.toModel(any())).thenReturn(ProductModel.builder().name("Product 1").id(productId).build());
@@ -157,7 +157,26 @@ class ProductServiceImplTest {
 
         assertThrows(ProductNotFoundException.class, () -> productService.getProductById(productId));
     }
+    @Test
+    void getProductByProductCode_shouldReturnProduct_whenProductExists() throws ProductNotFoundException {
 
+        String productCode = "Product 1";
+        Product product = Product.builder().name("Product 1").productCode(productCode).build();
+        when(productRepository.findProductByProductCodeEquals(productCode)).thenReturn(Optional.of(product));
+        when(productMapper.toModel(any())).thenReturn(ProductModel.builder().name("Product 1").productCode(productCode).build());
+
+        ProductModel productModel = productService.getProductByProductCode(productCode);
+
+        assertThat(productModel.getName()).isEqualTo("Product 1");
+    }
+
+    @Test
+    void getProductByProductCode_throwsProductNotFoundException_whenProductDoesNotExist() {
+        String productCode = "Product 1";
+        when(productRepository.findProductByProductCodeEquals(productCode)).thenReturn(Optional.empty());
+
+        assertThrows(ProductNotFoundException.class, () -> productService.getProductByProductCode(productCode));
+    }
     @Test
     void getProductsByFilter_shouldReturnProducts_whenProductsMatchFilter() {
         List<Product> products = List.of(

@@ -19,6 +19,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/products")
 @CrossOrigin(origins = "http://localhost:4200")
+
 public class ProductController {
     private final ProductService productService;
 
@@ -27,21 +28,10 @@ public class ProductController {
         this.productService = productService;
     }
 
-    private static void handleIfThereOneOrMoreFilteringOptions(String filter, StringPath filterOption, BooleanBuilder predicate) {
-
-        if (filter.contains(",")) { // Multiple filter options (comma separated)
-            List<String> filters = Arrays.asList(filter.split(","));
-            BooleanBuilder filterPredicate = new BooleanBuilder();
-            filters.forEach(filterItem -> filterPredicate.or(filterOption.eq(filterItem)));
-            predicate.and(filterPredicate);
-        } else {  // Single filter option
-            predicate.and(filterOption.eq(filter));
-        }
-    }
 
     @PostMapping
     public long createProduct(ProductModel productModel) {
-        return productService.addProduct(productModel);
+        return productService.createProduct(productModel);
     }
 
     @GetMapping
@@ -54,10 +44,6 @@ public class ProductController {
                                                   @RequestParam(required = false) Boolean active
     ) {
 
-
-        QProduct product = QProduct.product; // QueryDSL QClass for Product Entity
-
-
         Map<String, Object> filteringOptions = new HashMap<>();
 
         filteringOptions.put("name", name);
@@ -68,46 +54,17 @@ public class ProductController {
         filteringOptions.put("exactPrice", exactPrice);
         filteringOptions.put("active", active);
 
-
-        Predicate filterPredicate = getFilterPredicate(filteringOptions, product);
-
-
-        return productService.getProductsByFilter(filterPredicate);
+        return productService.getProductsByFilter(filteringOptions);
     }
 
-    private Predicate getFilterPredicate(Map<String, Object> filteringOptions, QProduct product) {
-        BooleanBuilder predicate = new BooleanBuilder();
-
-        filteringOptions.forEach((filterOption, filter) -> {
-            if (filter != null) {
-                switch (filterOption) {
-                    case "name" -> predicate.and(product.name.eq((String) filter));
-
-                    case "categoryName" ->
-                            handleIfThereOneOrMoreFilteringOptions((String) filter, product.category.name, predicate);
-
-                    case "brandName" ->
-                            handleIfThereOneOrMoreFilteringOptions((String) filter, product.brand.name, predicate);
-
-                    case "active" -> predicate.and(product.active.eq((Boolean) filter));
-
-                    case "exactPrice" -> predicate.and(product.price.eq((BigDecimal) filter));
-
-                    case "minPrice" -> predicate.and(product.price.goe((BigDecimal) filter));
-
-                    case "maxPrice" -> predicate.and(product.price.loe((BigDecimal) filter));
-
-                    default -> throw new IllegalStateException("Unexpected value: " + filterOption);
-                }
-            }
-        });
-
-        return predicate;
-    }
 
     @GetMapping("/{productId}")
     public ProductModel getProductById(@PathVariable long productId) {
         return productService.getProductById(productId);
+    }
+    @GetMapping("/code/{productCode}")
+    public ProductModel getProductById(@PathVariable String productCode) {
+        return productService.getProductByProductCode(productCode);
     }
 
     @PutMapping("/{productId}")
