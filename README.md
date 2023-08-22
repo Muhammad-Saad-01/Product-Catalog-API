@@ -27,7 +27,7 @@ mvn spring-boot:run
 ```
 
 
-If you didn't change the port, The API will be available on port 9005. You can use Swagger to explore the API documentation at http://localhost:9005/swagger-ui.html.
+If you didn't change the port, The API will be available on port 8008. You can use Swagger to explore the API documentation at http://localhost:8080/swagger-ui.html.
  
 ## Usage
 
