@@ -1,6 +1,7 @@
 package net.muhammadsaad.rest.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -57,17 +58,20 @@ public class ProductModel {
     private String imageUri;
 
     private boolean active;
+    @JsonIgnore
     @PositiveOrZero
     private Long stock;
 
     private int rating = 0;
 
+    @JsonIgnore
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime createdAt;
 
+    @JsonIgnore
     private LocalDateTime updatedAt;
 
-
+    @JsonIgnore
     private String inventoryStatus;
 
 

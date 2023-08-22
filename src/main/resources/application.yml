@@ -32,6 +32,8 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
+        connection:
+           release_mode: DELAYED
     show-sql: true
 
 #logging:
