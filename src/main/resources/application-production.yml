@@ -1,0 +1,25 @@
+spring:
+  config:
+    activate:
+      on-profile: production
+  application:
+    name: product-catalog-api
+  devtools:
+    livereload:
+      enabled: false
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${DATABASE_URL}/product-catalog-api
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        connection:
+          release_mode: DELAYED
+    show-sql: false

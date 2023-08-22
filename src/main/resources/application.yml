@@ -5,46 +5,8 @@ server:
   tomcat:
     accesslog:
       enabled: true
-
-
   port: 8080
 
-
 spring:
-  application:
-    name: product-catalog-api
-  devtools:
-    livereload:
-      enabled: false
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    hikari:
-      maxLifeTime: 1800000
-      idleTimeout: 600000
-      connectionTimeout: 100000
-      auto-commit: false
-      maximum-pool-size: 7
-      minimum-idle: 30
-
-
-#    url: jdbc:postgresql://localhost:5432/product-catalog-api
-#    username: postgres
-#    password: admin
-    url: jdbc:postgresql://dpg-cjhu17lmrchc73a44geg-a.oregon-postgres.render.com:5432/product_catalog_api
-    username: admin
-    password: ZpvLxLWEK4jvZYJVXPDneWyTHyilqW0Q
-  jpa:
-    generate-ddl: true
-    hibernate:
-      ddl-auto: create-drop
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-        format_sql: true
-        connection:
-           release_mode: DELAYED
-    show-sql: true
-
-#logging:
-#  pattern:
-#    console: "%d{dd-MM-yyyy HH:mm:ss} %magenta([%thread]) %highlight(%-5level) %logger.%M - %msg%n"
+  profiles:
+    active: development

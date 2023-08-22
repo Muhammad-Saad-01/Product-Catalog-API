@@ -11,12 +11,5 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:17-jdk-alpine
 COPY --from=build /target/*.jar app.jar
 EXPOSE 8080
-ENTRYPOINT ["java","-jar", "app.jar"]
-#COPY --from=build /target/*.jar app.jar
-## ENV PORT=8080
-#EXPOSE 8080
-#ENTRYPOINT ["java","-jar","app.jar"]
-#
-##
-##ADD target/*.jar app.jar
-##ENTRYPOINT ["java","-jar", "app.jar"]
+ENTRYPOINT ["java","-Dspring.profiles.active=production", "-jar", "app.jar"]
+

@@ -9,7 +9,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<Product, Long>, QuerydslPredicateExecutor<Product>
-//        ,QuerydslBinderCustomizer<QProduct>
 {
 
     @Query("SELECT p FROM Product p WHERE p.name = :productName")
@@ -18,12 +17,4 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Queryds
     @Query("SELECT p FROM Product p WHERE p.productCode = :productCode")
     Optional<Product> findProductByProductCodeEquals(@Param("productCode") String productCode);
 
-//    @Override
-//    default void customize(QuerydslBindings bindings, QProduct root) {
-//        bindings.bind(root.category)
-//                .all((path, value) -> Optional.of(path.in(value)));
-//        bindings.bind(root.brand).all(
-//                (path, value) -> Optional.of(path.in(value))
-//        );
-//    }
 }
