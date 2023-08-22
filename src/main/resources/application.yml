@@ -18,6 +18,15 @@ spring:
       enabled: false
   datasource:
     driver-class-name: org.postgresql.Driver
+    hikari:
+      maxLifeTime: 1800000
+      idleTimeout: 600000
+      connectionTimeout: 100000
+      auto-commit: false
+      maximum-pool-size: 7
+      minimum-idle: 30
+
+
 #    url: jdbc:postgresql://localhost:5432/product-catalog-api
 #    username: postgres
 #    password: admin
