@@ -18,6 +18,8 @@ import net.muhammadsaad.rest.repository.BrandRepository;
 import net.muhammadsaad.rest.repository.CategoryRepository;
 import net.muhammadsaad.rest.repository.ProductRepository;
 import net.muhammadsaad.rest.service.ProductService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -93,6 +95,16 @@ public class ProductServiceImpl implements ProductService {
         return productMapper.toModels(products);
     }
 
+
+    @Override
+    public Page<ProductModel> getProducts(Map<String, Object> filteringOptions, Pageable pageable) {
+        Predicate predicate = getFilterPredicate(filteringOptions, QProduct.product);
+
+        return productRepository.findAll(predicate, pageable)
+                .map(productMapper::toModel);
+    }
+
+
     @Override
     public void deleteProduct(long productId) {
         Product product = productRepository.findById(productId)
@@ -107,6 +119,7 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(ProductNotFoundException::new);
         return product.getPrice();
     }
+
 
     @Override
     public void activateProduct(long productId) {

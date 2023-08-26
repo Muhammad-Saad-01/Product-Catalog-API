@@ -33,6 +33,5 @@ public class BrandModel {
     @Schema(example = "https://www.ea.com/")
     private String brandWebsiteUri;
 
-
     private boolean active;
 }

@@ -1,19 +1,21 @@
 package net.muhammadsaad.rest.controller;
 
-import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
-import com.querydsl.core.types.dsl.StringPath;
-import net.muhammadsaad.rest.entity.QProduct;
+import net.muhammadsaad.rest.entity.Product;
 import net.muhammadsaad.rest.model.ProductModel;
 import net.muhammadsaad.rest.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 
 @RestController
@@ -34,14 +36,16 @@ public class ProductController {
         return productService.createProduct(productModel);
     }
 
-    @GetMapping
-    public List<ProductModel> getFilteredProducts(@RequestParam(required = false) String name,
+    @GetMapping("/filter")
+    public Page<ProductModel> getFilteredProducts(@RequestParam(required = false) String name,
                                                   @RequestParam(required = false) String categoryName,
                                                   @RequestParam(required = false) String brandName,
                                                   @RequestParam(required = false) BigDecimal minPrice,
                                                   @RequestParam(required = false) BigDecimal maxPrice,
                                                   @RequestParam(required = false) BigDecimal exactPrice,
-                                                  @RequestParam(required = false) Boolean active
+                                                  @RequestParam(required = false) Boolean active,
+                                                  @RequestParam(required = false) Integer page,
+                                                  @RequestParam(required = false) Integer size
     ) {
 
         Map<String, Object> filteringOptions = new HashMap<>();
@@ -54,14 +58,23 @@ public class ProductController {
         filteringOptions.put("exactPrice", exactPrice);
         filteringOptions.put("active", active);
 
-        return productService.getProductsByFilter(filteringOptions);
+
+        Pageable pageable = Pageable
+                .ofSize(Objects.requireNonNullElse(size, 12))
+                .withPage(Objects.requireNonNullElse(page, 0));
+        
+
+        return  productService.getProducts(filteringOptions, pageable);
+
     }
+
 
 
     @GetMapping("/{productId}")
     public ProductModel getProductById(@PathVariable long productId) {
         return productService.getProductById(productId);
     }
+
     @GetMapping("/code/{productCode}")
     public ProductModel getProductById(@PathVariable String productCode) {
         return productService.getProductByProductCode(productCode);

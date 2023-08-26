@@ -74,7 +74,5 @@ public class ProductModel {
     @JsonIgnore
     private String inventoryStatus;
 
-
-
 }
 
