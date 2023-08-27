@@ -32,4 +32,5 @@ public interface ProductService {
 
     BigDecimal getProductPrice(long productId);
 
+    List<ProductModel> getAllProducts();
 }

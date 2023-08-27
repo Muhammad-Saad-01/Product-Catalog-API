@@ -22,4 +22,4 @@ spring:
         format_sql: true
         connection:
           release_mode: DELAYED
-    show-sql: true
+#    show-sql: true

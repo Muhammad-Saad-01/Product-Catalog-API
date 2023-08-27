@@ -120,6 +120,11 @@ public class ProductServiceImpl implements ProductService {
         return product.getPrice();
     }
 
+    @Override
+    public List<ProductModel> getAllProducts() {
+        return productMapper.toModels(productRepository.findAll());
+    }
+
 
     @Override
     public void activateProduct(long productId) {
@@ -138,10 +143,10 @@ public class ProductServiceImpl implements ProductService {
                     case "name" -> predicate.and(product.name.eq((String) filter));
 
                     case "categoryName" -> // categoryName=Video Games,Electronics (comma separated)
-                            handleIfThereOneOrMoreFilteringOptions((String) filter, product.category.name, predicate);
+                            handleIfThereOneOrMoreFilteringOptions((String[]) filter, product.category.name, predicate);
 
                     case "brandName" -> // brandName=EA Sports,Ubisoft (comma separated)
-                            handleIfThereOneOrMoreFilteringOptions((String) filter, product.brand.name, predicate);
+                            handleIfThereOneOrMoreFilteringOptions((String[]) filter, product.brand.name, predicate);
 
                     case "active" -> predicate.and(product.active.eq((Boolean) filter));
 
@@ -159,16 +164,10 @@ public class ProductServiceImpl implements ProductService {
         return predicate;
     }
 
-    private void handleIfThereOneOrMoreFilteringOptions(String filter, StringPath filterOption, BooleanBuilder predicate) {
-
-        if (filter.contains(",")) { // Multiple filter options (comma separated)
-            List<String> filters = Arrays.asList(filter.split(","));
-            BooleanBuilder filterPredicate = new BooleanBuilder();
-            filters.forEach(filterItem -> filterPredicate.or(filterOption.eq(filterItem)));
-            predicate.and(filterPredicate);
-        } else {  // Single filter option
-            predicate.and(filterOption.eq(filter));
-        }
+    private void handleIfThereOneOrMoreFilteringOptions(String[] filter, StringPath filterOption, BooleanBuilder predicate) {
+        BooleanBuilder filterPredicate = new BooleanBuilder();
+        Arrays.stream(filter).forEach(filterItem -> filterPredicate.or(filterOption.eq(filterItem)));
+        predicate.and(filterPredicate);
     }
 
 }
