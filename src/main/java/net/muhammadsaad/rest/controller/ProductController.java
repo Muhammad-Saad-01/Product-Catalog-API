@@ -56,7 +56,7 @@ public class ProductController {
 
         int pageNumber = Objects.requireNonNullElse(page, DEFAULT_PAGE_NUMBER);
         int pageSize = Objects.requireNonNullElse(size, DEFAULT_PAGE_SIZE);
-        Sort sortingOptions = Objects.requireNonNullElse(parseSortingOption(sort), Sort.unsorted());
+        Sort sortingOptions = parseSortingOption(sort);
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sortingOptions);
 
@@ -101,10 +101,23 @@ public class ProductController {
     }
 
     private Sort parseSortingOption(String[] sort) {
+        if (sort == null)
+            return Sort.unsorted();
+
+        if (sort.length == 2
+                && (sort[1].equalsIgnoreCase("desc") || sort[1].equalsIgnoreCase("asc"))) {
+            return sort[1].equalsIgnoreCase("desc") ?
+                    Sort.by(sort[0]).descending() :
+                    Sort.by(sort[0]);
+        } // wrong parsing by spring
+
         return Arrays.stream(sort)
+
                 .map(sortOption -> {
                     String[] sortOptionParts = sortOption.split(",");
+
                     if (sortOptionParts.length == 2) {
+
                         return sortOptionParts[1].equalsIgnoreCase("desc") ?
                                 Sort.by(sortOptionParts[0]).descending() :
                                 Sort.by(sortOptionParts[0]);
