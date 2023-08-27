@@ -11,10 +11,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 
 @RestController
@@ -22,6 +19,8 @@ import java.util.Objects;
 @CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class ProductController {
+    private static final int DEFAULT_PAGE_SIZE = 9;
+    private static final int DEFAULT_PAGE_NUMBER = 0;
     private final ProductService productService;
 
     @PostMapping
@@ -55,29 +54,11 @@ public class ProductController {
         filteringOptions.put("active", active);
 
 
-        Pageable pageable = Pageable
-                .ofSize(Objects.requireNonNullElse(size, 9))
-                .withPage(Objects.requireNonNullElse(page, 0));
+        int pageNumber = Objects.requireNonNullElse(page, DEFAULT_PAGE_NUMBER);
+        int pageSize = Objects.requireNonNullElse(size, DEFAULT_PAGE_SIZE);
+        Sort sortingOptions = Objects.requireNonNullElse(parseSortingOption(sort), Sort.unsorted());
 
-        if (sort != null) {
-
-            Sort sortingOptions = Sort.unsorted();
-            for (String sortOption : sort) {
-
-                String[] sortOptionParts = sortOption.split(",");
-                if (sortOptionParts.length == 2) {
-                    if (sortOptionParts[1].equalsIgnoreCase("desc")) {
-                        sortingOptions = sortingOptions.and(Sort.by(sortOptionParts[0]).descending());
-                    } else {
-                        sortingOptions = sortingOptions.and(Sort.by(sortOptionParts[0]));
-                    }
-                } else {
-                    sortingOptions = sortingOptions.and(Sort.by(sortOptionParts[0]));
-                }
-
-            }
-            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortingOptions);
-        }
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sortingOptions);
 
         return productService.getProducts(filteringOptions, pageable);
 
@@ -119,5 +100,17 @@ public class ProductController {
         productService.activateProduct(productId);
     }
 
-
+    private Sort parseSortingOption(String[] sort) {
+        return Arrays.stream(sort)
+                .map(sortOption -> {
+                    String[] sortOptionParts = sortOption.split(",");
+                    if (sortOptionParts.length == 2) {
+                        return sortOptionParts[1].equalsIgnoreCase("desc") ?
+                                Sort.by(sortOptionParts[0]).descending() :
+                                Sort.by(sortOptionParts[0]);
+                    }
+                    return Sort.by(sortOptionParts[0]);
+                })
+                .reduce(Sort.unsorted(), Sort::and);
+    }
 }

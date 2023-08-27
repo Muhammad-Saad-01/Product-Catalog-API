@@ -160,8 +160,7 @@ public class ProductServiceImpl implements ProductService {
 
     private void handleIfThereOneOrMoreFilteringOptions(String[] filter, StringPath filterOption, BooleanBuilder predicate) {
         BooleanBuilder filterPredicate = new BooleanBuilder();
-        Arrays
-                .stream(filter)
+        Arrays.stream(filter)
                 .forEach(filterItem -> filterPredicate.or(filterOption.eq(filterItem)));
         predicate.and(filterPredicate);
     }
