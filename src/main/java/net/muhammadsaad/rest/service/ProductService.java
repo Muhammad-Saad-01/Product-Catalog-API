@@ -1,10 +1,8 @@
 package net.muhammadsaad.rest.service;
 
-import com.querydsl.core.types.Predicate;
 import net.muhammadsaad.rest.model.ProductModel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -17,11 +15,6 @@ public interface ProductService {
 
     ProductModel getProductByProductCode(String productCode);
 
-    List<ProductModel> getProductsByFilter(Predicate predicate);
-
-    List<ProductModel> getProductsByFilter(Map<String, Object> filteringOptions);
-
-
     void updateProduct(Long productId, ProductModel productModel);
 
     void activateProduct(long productId);
@@ -33,4 +26,7 @@ public interface ProductService {
     BigDecimal getProductPrice(long productId);
 
     List<ProductModel> getAllProducts();
+
+    long getProductsCount(Boolean active);
+
 }

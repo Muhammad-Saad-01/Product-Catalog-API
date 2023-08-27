@@ -21,9 +21,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -94,7 +98,7 @@ class ProductServiceImplTest {
     void addProduct_throwsBrandNotFoundException_whenBrandNotExists() {
         ProductModel productModel = ProductModel.builder().name("Product 1").build();
         Category category = Category.builder().name("Category 1").id(1L).build();
-        Brand brand = Brand.builder().name("Brand 1").id(1L).build();
+
         when(productRepository.findProductByNameEquals(any())).thenReturn(Optional. empty());
         when(categoryRepository.findCategoryByNameEquals(any())).thenReturn(Optional.of(category));
         when(brandRepository.findBrandByNameEquals(any())).thenReturn(Optional.empty());
@@ -194,10 +198,11 @@ class ProductServiceImplTest {
         BooleanBuilder predicate = new BooleanBuilder();
         QProduct qProduct = QProduct.product;
         predicate.and(qProduct.name.eq("Product 1"));
+        Pageable pageable = Pageable.unpaged();
+        Map<String, Object> filteringOptions = new HashMap<>();
+        Page<ProductModel> productModels = productService.getProducts(filteringOptions, pageable);
 
-        List<ProductModel> productModels = productService.getProductsByFilter(predicate);
-
-        assertThat(productModels.get(0).getName()).isEqualTo("Product 1");
+        assertThat(productModels.getContent()).hasSize(3);
     }
     @Test
     void deleteProduct_shouldDeleteProduct_whenProductExists() throws ProductNotFoundException {

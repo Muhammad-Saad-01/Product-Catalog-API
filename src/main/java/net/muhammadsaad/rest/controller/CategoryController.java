@@ -3,6 +3,7 @@ package net.muhammadsaad.rest.controller;
 import com.querydsl.core.BooleanBuilder;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import net.muhammadsaad.rest.entity.QCategory;
 import net.muhammadsaad.rest.model.CategoryModel;
 import net.muhammadsaad.rest.service.CategoryService;
@@ -15,14 +16,12 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/categories")
 @CrossOrigin(origins = "*")
+
 public class CategoryController {
     private final CategoryService categoryService;
-
-    public CategoryController(CategoryService categoryService) {
-        this.categoryService = categoryService;
-    }
 
     @Operation(summary = "Add a category")
     @PostMapping
@@ -82,7 +81,9 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}/activate")
+    @Operation(summary = "Activate a category by it's id")
     public void activateCategory(@PathVariable Long id) {
         categoryService.activateCategory(id);
     }
+
 }

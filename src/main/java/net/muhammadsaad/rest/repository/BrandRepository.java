@@ -12,5 +12,6 @@ public interface BrandRepository extends JpaRepository<Brand, Long> {
     @Query("SELECT b FROM Brand b WHERE b.name = :brandName")
     Optional<Brand> findBrandByNameEquals(@Param("brandName") String brandName);
 
-
+    boolean existsByNameEquals(String brandName);
+    long countAllByActiveEquals(boolean b);
 }

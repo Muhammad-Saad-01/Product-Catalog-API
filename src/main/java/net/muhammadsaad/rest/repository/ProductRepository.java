@@ -1,6 +1,7 @@
 package net.muhammadsaad.rest.repository;
 
 import com.querydsl.core.types.Predicate;
+import lombok.NonNull;
 import net.muhammadsaad.rest.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,8 +24,8 @@ public interface ProductRepository extends
     @Query("SELECT p FROM Product p WHERE p.productCode = :productCode")
     Optional<Product> findProductByProductCodeEquals(@Param("productCode") String productCode);
 
+    @NonNull
+    Page<Product> findAll(@NonNull Predicate predicate, @NonNull Pageable pageable);
 
-    Page<Product> findAll(Predicate predicate, Pageable pageable);
-
-
+    long countAllByActiveEquals(boolean b);
 }

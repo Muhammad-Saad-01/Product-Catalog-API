@@ -30,7 +30,6 @@ public class CategoryServiceImpl implements CategoryService {
             throw new CategoryAlreadyExistException();
         }
 
-
         Category category = categoryMapper.toEntity(categoryModel);
         category = categoryRepository.save(category);
         return category.getId();
@@ -87,5 +86,13 @@ public class CategoryServiceImpl implements CategoryService {
 
         return categoryMapper.toModels((List<Category>) categories);
     }
+
+    @Override
+    public long getCategoriesCount(Boolean active) {
+        if (active == null)
+            return categoryRepository.count();
+        return categoryRepository.countAllByActiveEquals(active);
+    }
+
 
 }

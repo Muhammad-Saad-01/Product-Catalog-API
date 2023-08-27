@@ -39,7 +39,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public long createProduct(ProductModel productModel) {
-        System.out.println(productModel);
+
         if (productRepository.findProductByNameEquals(productModel.getName()).isPresent())
             throw new ProductAlreadyExistException();
         Category category = categoryRepository.findCategoryByNameEquals(productModel.getCategoryName())
@@ -50,7 +50,6 @@ public class ProductServiceImpl implements ProductService {
         product.setCategory(category);
         product.setBrand(brand);
 
-
         product = productRepository.save(product);
         return product.getId();
     }
@@ -59,10 +58,12 @@ public class ProductServiceImpl implements ProductService {
     public void updateProduct(Long productId, ProductModel productModel) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(ProductNotFoundException::new);
-        categoryRepository.findCategoryByNameEquals(productModel.getCategoryName())
-                .orElseThrow(CategoryNotFoundException::new);
-        brandRepository.findBrandByNameEquals(productModel.getBrandName())
-                .orElseThrow(BrandNotFoundException::new);
+
+        if (!categoryRepository.existsByNameEquals(productModel.getCategoryName()))
+            throw new CategoryNotFoundException();
+        if (!brandRepository.existsByNameEquals(productModel.getBrandName()))
+            throw new BrandNotFoundException();
+
         product = productMapper.updateProduct(productModel, product);
         productRepository.save(product);
 
@@ -81,24 +82,10 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(ProductNotFoundException::new));
     }
 
-    @Override
-    public List<ProductModel> getProductsByFilter(Predicate predicate) {
-        Iterable<Product> products = productRepository.findAll(predicate);
-        return productMapper.toModels(products);
-    }
-
-    @Override
-    public List<ProductModel> getProductsByFilter(Map<String, Object> filteringOptions) {
-        QProduct product = QProduct.product;
-        Predicate filterPredicate = getFilterPredicate(filteringOptions, product);
-        Iterable<Product> products = productRepository.findAll(filterPredicate);
-        return productMapper.toModels(products);
-    }
-
 
     @Override
     public Page<ProductModel> getProducts(Map<String, Object> filteringOptions, Pageable pageable) {
-        Predicate predicate = getFilterPredicate(filteringOptions, QProduct.product);
+        Predicate predicate = getFilterPredicate(filteringOptions);
 
         return productRepository.findAll(predicate, pageable)
                 .map(productMapper::toModel);
@@ -125,6 +112,12 @@ public class ProductServiceImpl implements ProductService {
         return productMapper.toModels(productRepository.findAll());
     }
 
+    @Override
+    public long getProductsCount(Boolean active) {
+        if (active == null)
+            return productRepository.count();
+        return productRepository.countAllByActiveEquals(active);
+    }
 
     @Override
     public void activateProduct(long productId) {
@@ -134,18 +127,19 @@ public class ProductServiceImpl implements ProductService {
         productRepository.save(product);
     }
 
-    private Predicate getFilterPredicate(Map<String, Object> filteringOptions, QProduct product) {
+    private Predicate getFilterPredicate(Map<String, Object> filteringOptions) {
         BooleanBuilder predicate = new BooleanBuilder();
+        QProduct product = QProduct.product;
 
         filteringOptions.forEach((filterOption, filter) -> {
             if (filter != null) {
                 switch (filterOption) {
                     case "name" -> predicate.and(product.name.eq((String) filter));
 
-                    case "categoryName" -> // categoryName=Video Games,Electronics (comma separated)
+                    case "categoryName" -> // category=Games&category=Electronics (ampersand separated)
                             handleIfThereOneOrMoreFilteringOptions((String[]) filter, product.category.name, predicate);
 
-                    case "brandName" -> // brandName=EA Sports,Ubisoft (comma separated)
+                    case "brandName" -> // brand=EA Sports&Brand=Sony (ampersand separated)
                             handleIfThereOneOrMoreFilteringOptions((String[]) filter, product.brand.name, predicate);
 
                     case "active" -> predicate.and(product.active.eq((Boolean) filter));
@@ -166,7 +160,9 @@ public class ProductServiceImpl implements ProductService {
 
     private void handleIfThereOneOrMoreFilteringOptions(String[] filter, StringPath filterOption, BooleanBuilder predicate) {
         BooleanBuilder filterPredicate = new BooleanBuilder();
-        Arrays.stream(filter).forEach(filterItem -> filterPredicate.or(filterOption.eq(filterItem)));
+        Arrays
+                .stream(filter)
+                .forEach(filterItem -> filterPredicate.or(filterOption.eq(filterItem)));
         predicate.and(filterPredicate);
     }
 
