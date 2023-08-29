@@ -20,6 +20,7 @@ public interface ProductMapper {
     @InheritInverseConfiguration
     Product toEntity(ProductModel productModel);
 
+
     List<ProductModel> toModels(Iterable<Product> products);
 
     Product updateProduct(ProductModel productModel, @MappingTarget Product product);

@@ -33,6 +33,7 @@ public class Product {
     @Column(unique = true, nullable = false)
     private String name;
 
+    @Column(columnDefinition = "TEXT", length = 2000)
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

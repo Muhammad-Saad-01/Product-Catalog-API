@@ -1,6 +1,7 @@
 package net.muhammadsaad.rest.service.impl;
 
 import com.querydsl.core.types.Predicate;
+import lombok.AllArgsConstructor;
 import net.muhammadsaad.rest.entity.Category;
 import net.muhammadsaad.rest.exception.category.CategoryAlreadyExistException;
 import net.muhammadsaad.rest.exception.category.CategoryNotFoundException;
@@ -14,15 +15,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
 
-    public CategoryServiceImpl(CategoryRepository categoryRepository, CategoryMapper categoryMapper) {
-        this.categoryRepository = categoryRepository;
-        this.categoryMapper = categoryMapper;
-    }
 
     @Override
     public long createCategory(CategoryModel categoryModel) {
@@ -87,12 +85,6 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryMapper.toModels((List<Category>) categories);
     }
 
-    @Override
-    public long getCategoriesCount(Boolean active) {
-        if (active == null)
-            return categoryRepository.count();
-        return categoryRepository.countAllByActiveEquals(active);
-    }
 
 
 }

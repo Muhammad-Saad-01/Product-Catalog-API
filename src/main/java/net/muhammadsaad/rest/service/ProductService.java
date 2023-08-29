@@ -27,6 +27,6 @@ public interface ProductService {
 
     List<ProductModel> getAllProducts();
 
-    long getProductsCount(Boolean active);
+
 
 }

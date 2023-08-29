@@ -12,6 +12,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long>, Query
     @Query("SELECT c FROM Category c WHERE c.name = :categoryName")
     Optional<Category> findCategoryByNameEquals(@Param("categoryName") String categoryName);
 
+
     boolean existsByNameEquals(String categoryName);
     @Query("SELECT count (c) FROM Category c WHERE c.active = :active")
     long countAllByActiveEquals(@Param("active") boolean active);

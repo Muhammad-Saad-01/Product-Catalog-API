@@ -1,6 +1,10 @@
 package net.muhammadsaad.rest.controller;
 
+
 import io.swagger.v3.oas.annotations.Operation;
+
+import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import net.muhammadsaad.rest.model.ProductModel;
 import net.muhammadsaad.rest.service.ProductService;
@@ -8,7 +12,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.validation.annotation.Validated;
+
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -18,6 +23,7 @@ import java.util.*;
 @RequestMapping("/products")
 @CrossOrigin(origins = "*")
 @RequiredArgsConstructor
+@Validated
 public class ProductController {
     private static final int DEFAULT_PAGE_SIZE = 9;
     private static final int DEFAULT_PAGE_NUMBER = 0;
@@ -25,7 +31,7 @@ public class ProductController {
 
     @PostMapping
     @Operation(summary = "Add a product")
-    public long createProduct(ProductModel productModel) {
+    public long createProduct(@Valid @RequestBody ProductModel productModel) {
         return productService.createProduct(productModel);
     }
 
@@ -84,7 +90,7 @@ public class ProductController {
 
     @PutMapping("/{productId}")
     @Operation(summary = "Update a product")
-    public void updateProduct(@PathVariable long productId, ProductModel productModel) {
+    public void updateProduct(@PathVariable long productId,@Valid @RequestBody  ProductModel productModel) {
         productService.updateProduct(productId, productModel);
     }
 

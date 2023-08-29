@@ -69,12 +69,6 @@ public class BrandServiceImpl implements BrandService {
         return brandMapper.toModels(brandRepository.findAll());
     }
 
-    @Override
-    public long getBrandsCount(Boolean active) {
-        if (active == null)
-            return brandRepository.count();
-        return brandRepository.countAllByActiveEquals(active);
-    }
 
 
 }

@@ -16,7 +16,7 @@ import org.hibernate.validator.constraints.URL;
 public class BrandModel {
 
     @JsonIgnore
-    private long id;
+    private Long id;
 
     @Schema(example = "EA Sports")
     @NotNull
@@ -33,5 +33,5 @@ public class BrandModel {
     @Schema(example = "https://www.ea.com/")
     private String brandWebsiteUri;
 
-    private boolean active;
+    private Boolean active;
 }

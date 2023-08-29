@@ -19,6 +19,6 @@ public interface CategoryService {
 
     List<CategoryModel> getCategoriesByFilter(Predicate predicate);
 
-    long getCategoriesCount(Boolean active);
+
 
 }

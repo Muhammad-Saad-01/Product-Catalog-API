@@ -11,6 +11,8 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface ProductRepository extends
@@ -26,6 +28,26 @@ public interface ProductRepository extends
 
     @NonNull
     Page<Product> findAll(@NonNull Predicate predicate, @NonNull Pageable pageable);
+
+    @Query(value = "SELECT c.name, COUNT(p) AS ProductCount " +
+            "FROM Products p " +
+            "JOIN Categories c " +
+            "ON p.Category_Id = c.Id " +
+            "GROUP BY c.name " +
+            "ORDER BY ProductCount DESC"
+            , nativeQuery = true)
+    List<Object[]> countProductsByCategory();
+
+    @Query(
+            value = "SELECT b.name, COUNT(p) AS ProductCount " +
+                    "FROM Products p " +
+                    "JOIN Brands b " +
+                    "ON p.Brand_Id = b.Id " +
+                    "GROUP BY b.name " +
+                    "ORDER BY ProductCount DESC"
+            , nativeQuery = true
+    )
+    List<Object[]> countProductsByBrand();
 
     long countAllByActiveEquals(boolean b);
 }

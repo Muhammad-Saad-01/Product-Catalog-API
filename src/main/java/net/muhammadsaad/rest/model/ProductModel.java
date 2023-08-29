@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @Builder
 public class ProductModel {
 
-    private long id;
+    private Long id;
 
     @NotBlank(message = "Name is required")
     @Size(max = 255, message = "Name must be at most 255 characters")
@@ -57,7 +57,7 @@ public class ProductModel {
     @Schema(type = "string", example = "https://image.api.playstation.com/vulcan/ap/rnd/202307/0710/b5be3ed4fe3333949bc204af75d2f83e64706b6db50d0dd5.png")
     private String imageUri;
 
-    private boolean active;
+    private Boolean active;
     @JsonIgnore
     @PositiveOrZero
     private Long stock;
