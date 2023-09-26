@@ -9,6 +9,7 @@ This API provides a RESTful interface for managing products, brands, and categor
 * Filter products by price, availability, and other criteria
 
 > Live Preview: https://product-catalog-api-service.onrender.com/swagger-ui/index.html#/
+> UI Live Preview: https://product-catalog-ui.vercel.app/#/
 
 ## Getting Started
 
